@@ -1,113 +1,93 @@
-Smart Pet Feeding and Watering Station
-This project is an automated pet feeding and watering system based on a Raspberry Pi. It uses a camera with facial recognition to identify pets (cats or dogs) and load cell weight sensors to continuously monitor the food and water bowls. When the food or water in a bowl drops below a certain threshold, the system automatically dispenses more using servo motors. This system provides a practical solution for pet owners and helps ensure their pets' consistent nutritional needs are met.
+# **Smart Pet Feeding and Watering Station**
 
-Features
-Facial Recognition: Utilizes OpenCV and the face_recognition library to differentiate between cats and dogs.
+This project is an automated pet feeding and watering system based on a Raspberry Pi. It uses a camera with facial recognition technology to identify pets (cats or dogs). Load cell weight sensors continuously monitor the food and water bowls. When the food or water in a bowl drops below a certain threshold, servo motors are triggered to automatically dispense more. This system provides a practical solution for pet owners and helps ensure their pets' consistent nutritional needs are met.
 
-Weight Control: Uses HX711 sensors to accurately measure the weight of the food and water bowls.
+## **Features**
 
-Automatic Dispensing: Automatically dispenses food and water when the bowl's weight falls below a predefined threshold.
+* **Facial Recognition:** Utilizes **OpenCV** and the **face\_recognition** library to distinguish between cats and dogs.  
+* **Weight Control:** Uses **HX711 sensors** to accurately measure the weight in the food and water bowls.  
+* **Automatic Dispensing:** Automatically dispenses food and water with servo motors when the bowl's weight falls below a predefined threshold.  
+* **Modular Structure:** The project is organized into separate Python files for sensors and the main control loop, which improves code readability and maintainability.  
+* **Multithreading:** Dispensing actions run on a separate thread to avoid interrupting the main loop's facial recognition and sensor monitoring tasks.
 
-Modular Structure: The project is organized into separate Python files for sensors and the main control loop, which improves code readability and maintainability.
+## **Hardware Requirements**
 
-Multithreading: Dispensing actions run on a separate thread to avoid interrupting the main loop's facial recognition and sensor monitoring tasks.
+* Raspberry Pi (3B, 4, or newer)  
+* Raspberry Pi Camera Module  
+* HX711 Weight Sensor and Load Cells  
+* Servo Motors  
+* Power Supply
 
-Hardware Requirements
-Raspberry Pi (3B, 4, or newer)
+## **Software Requirements**
 
-Raspberry Pi Camera Module
+Before running the project, make sure all the libraries listed in the **requirements.txt** file are installed.
 
-HX711 Weight Sensor and Load Cells
+pip install \-r requirements.txt
 
-Servo Motors
+### **requirements.txt contents:**
 
-Power Supply
+RPi.GPIO  
+numpy  
+opencv-python  
+pickle  
+imutils  
+face\_recognition
 
-Software Requirements
-Before running the project, make sure all the libraries listed in the requirements.txt file are installed.
+## **Setup and Usage**
 
-pip install -r requirements.txt
+1. **Hardware Connections:** Connect the sensors, motors, and camera to your Raspberry Pi according to the schematic below.  
+2. **Clone the Project:** Clone this repository to your Raspberry Pi or transfer the project files.  
+3. **Run the Project:** Start the main control loop by running the following command in the terminal:  
+   python3 main.py
 
+## **Detailed Hardware Connection Diagram**
 
-requirements.txt contents:
-RPi.GPIO
-numpy
-opencv-python
-pickle
-imutils
-face_recognition
+### **1\. HX711 Sensor Connections**
 
+Each HX711 sensor has 4 basic pins: DT (Data), SCK (Clock), VCC (Power), and GND (Ground). The connection to the Raspberry Pi is as follows.
 
-Setup and Usage
-Hardware Connections: Connect the sensors, motors, and camera to your Raspberry Pi according to the provided schematic.
+* **Water Bowl Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 10 (Physical Pin 19\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 9 (Physical Pin 21\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins  
+* **Dog Food Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 11 (Physical Pin 23\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 0 (Physical Pin 27\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins  
+* **Cat Food Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 5 (Physical Pin 29\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 6 (Physical Pin 31\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins  
+* **Water Tank Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 2 (Physical Pin 3\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 3 (Physical Pin 5\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins  
+* **Dog Food Tank Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 4 (Physical Pin 7\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 17 (Physical Pin 11\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins  
+* **Cat Food Tank Sensor**  
+  * **DT Pin (Orange):** Raspberry Pi GPIO 27 (Physical Pin 13\)  
+  * **SCK Pin (Yellow):** Raspberry Pi GPIO 22 (Physical Pin 15\)  
+  * **VCC & GND:** Raspberry Pi 5V & GND pins
 
-Clone the Project: Clone this repository to your Raspberry Pi or transfer the project files.
+### **2\. Servo Motor Connections**
 
-Run the Project: Start the main control loop by running the following command in the terminal:
+Each servo motor has 3 cables: power, ground, and signal.
 
-python3 main.py
+* **Signal Cable (Yellow/Orange):** Connect the signal cable of each motor to a GPIO pin that supports PWM (Pulse Width Modulation). Specific pins are not defined in **main.py**, but commonly used PWM pins are **GPIO 12, GPIO 13, GPIO 18, and GPIO 19**.  
+* **Power Cable (Red):** Connect to the **5V** pin on the Raspberry Pi.  
+* **Ground Cable (Brown/Black):** Connect to the **GND** (Ground) pin on the Raspberry Pi.
 
+### **3\. Raspberry Pi Camera Module Connection**
 
-Detailed Hardware Connection Diagram
-This diagram shows how the physical components of your project are connected to the Raspberry Pi. Connections are based on the pin assignments in the sensorler.py file.
+The camera module connects to the dedicated **CSI (Camera Serial Interface)** port on the Raspberry Pi board. Make sure the ribbon cable is inserted in the correct orientation with the clips on the port.
 
-+---------------------------------------------------------------------------------------------------------------------+
-|                                                  Raspberry Pi GPIO Pinout                                           |
-|                                                   (BCM Pin Numbers)                                                 |
-+---------------------------------------------------------------------------------------------------------------------+
-|                                                                                                                     |
-|                                         +------------------------------+                                            |
-|                                         |       HX711 Sensor Modules       |                                            |
-|                                         +------------------------------+                                            |
-|                                                                                                                     |
-|                                           V                             V                                           |
-|                                    +-------------+               +-------------+                                    |
-|                                    |   VCC - 5V  |               |  GND - GND  |                                    |
-|                                    +-------------+               +-------------+                                    |
-|                                                                                                                     |
-|---------------------------------------------------------------------------------------------------------------------|
-|                                                                                                                     |
-| +--------------------------------+ +----------------------------------+ +----------------------------------+       |
-| | **Water Bowl Sensor** | | **Dog Food Sensor** | | **Cat Food Sensor** |       |
-| |                                | |                                  | |                                  |       |
-| | **DT Pin:** GPIO 10 (Pin 19)   | | **DT Pin:** GPIO 11 (Pin 23)     | | **DT Pin:** GPIO 5 (Pin 29)      |       |
-| | **SCK Pin:** GPIO 9 (Pin 21)   | | **SCK Pin:** GPIO 0 (Pin 27)     | | **SCK Pin:** GPIO 6 (Pin 31)     |       |
-| +--------------------------------+ +----------------------------------+ +----------------------------------+       |
-|                                                                                                                     |
-| +--------------------------------+ +----------------------------------+ +----------------------------------+       |
-| | **Water Tank Sensor** | | **Dog Food Tank Sensor** | | **Cat Food Tank Sensor** |       |
-| |                                | |                                  | |                                  |       |
-| | **DT Pin:** GPIO 2 (Pin 3)     | | **DT Pin:** GPIO 4 (Pin 7)       | | **DT Pin:** GPIO 27 (Pin 13)     |       |
-| | **SCK Pin:** GPIO 3 (Pin 5)    | | **SCK Pin:** GPIO 17 (Pin 11)    | | **SCK Pin:** GPIO 22 (Pin 15)    |       |
-| +--------------------------------+ +----------------------------------+ +----------------------------------+       |
-|                                                                                                                     |
-|---------------------------------------------------------------------------------------------------------------------|
-|                                                                                                                     |
-| +-----------------------------------------------------------------------------------------------------------------+ |
-| | **Servo Motors (Food and Water Dispensing)** | |
-| | Note: The specific pins for the motors are not defined in `main.py`.                                            | |
-| | A PWM (Pulse Width Modulation) capable GPIO pin should be used for servo control.                               | |
-| | Commonly used PWM pins: GPIO 12, GPIO 13, GPIO 18, GPIO 19.                                                     | |
-| | * Connection: Signal Pin (Motor) -> GPIO (e.g., GPIO 13), VCC -> 5V, GND -> GND.                                 | |
-| +-----------------------------------------------------------------------------------------------------------------+ |
-|                                                                                                                     |
-| +-----------------------------------------------------------------------------------------------------------------+ |
-| | **Raspberry Pi Camera Module** | |
-| |                                                                                                                 | |
-| | The camera module connects to the dedicated **CSI (Camera Serial Interface)** port on the Raspberry Pi board.  | |
-| | Make sure the ribbon cable is inserted in the correct orientation.                                              | |
-| +-----------------------------------------------------------------------------------------------------------------+ |
-+---------------------------------------------------------------------------------------------------------------------+
+## **Project Files**
 
-Project Files
-main.py: The main control loop of the project. It handles the camera feed, performs facial recognition, and calls the food/water dispensing functions based on the animal type.
-
-sensorler.py: Manages the hardware connections, including sensor calibration and motor control.
-
-hx711.py: Contains the Python class used to communicate with the HX711 sensor module.
-
-animal_face_recognition.py: Creates the pickle files of animal faces for facial recognition.
-
-cat_faces.xml & dog_faces.xml: OpenCV Cascade files used for facial recognition.
-
-cat.pickle & dog.pickle: Trained datasets for facial recognition.
+* **main.py:** The main Python file containing the project's control loop. It processes the camera feed, performs facial recognition, and calls the food/water dispensing functions based on the animal type.  
+* **sensorler.py:** Manages hardware connections, sensor calibration, and motor control.  
+* **hx711.py:** Contains the Python class used to communicate with the HX711 sensor module.  
+* **animal\_face\_recognition.py:** Creates the pickle files for animal faces.  
+* **cat\_faces.xml & dog\_faces.xml:** OpenCV Cascade files used for facial recognition.  
+* **cat.pickle & dog.pickle:** Trained datasets for facial recognition.
