@@ -1,0 +1,6 @@
+RPi.GPIO
+numpy
+opencv-python
+pickle
+imutils
+face_recognition
